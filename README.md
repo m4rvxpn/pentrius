@@ -42,4 +42,4 @@ See individual component READMEs for setup instructions:
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+Proprietary. All rights reserved. See [LICENSE](LICENSE) for details.
