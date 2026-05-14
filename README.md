@@ -40,14 +40,6 @@ See individual component READMEs for setup instructions:
 - [AI Engine](pentrius-ai-engine/README.md)
 - [Frontend](pentrius-canvas/README.md)
 
-## Documentation
-
-For complete documentation, see the [capstone report](capstone1-report.md).
-
 ## License
 
-Apache License 2.0
-
----
-
-**Note**: Full implementation is available in the private repository. This public repository contains only documentation and interface specifications.
+MIT License. See [LICENSE](LICENSE) for details.
