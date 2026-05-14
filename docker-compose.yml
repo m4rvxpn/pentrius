@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with TimescaleDB
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      POSTGRES_DB: pentrius
+      POSTGRES_USER: pentrius
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redis
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # immudb
+  immudb:
+    image: immudb/immudb:v1.9
+    ports:
+      - "3322:3322"
+      - "3323:3323"
+    environment:
+      IMMUDB_PASSWORD: password
+    volumes:
+      - immudb_data:/var/lib/immudb
+
+  # IPFS
+  ipfs:
+    image: ipfs/kubo:v0.24.0
+    ports:
+      - "8080:8080"
+      - "5001:5001"
+    volumes:
+      - ipfs_data:/data/ipfs
+
+  # Backend API
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://pentrius:password@postgres:5432/pentrius
+      - REDIS_URL=redis://redis:6379
+      - IMMUDB_URL=grpc://immudb:3322
+    depends_on:
+      - postgres
+      - redis
+      - immudb
+
+  # AI Engine
+  ai-engine:
+    build: ./pentrius-ai-engine
+    ports:
+      - "8001:8001"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CHROMA_DB_PATH=/app/chroma
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+  # Kong Gateway
+  kong:
+    image: kong:3.4
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+    environment:
+      - KONG_DATABASE=off
+      - KONG_DECLARATIVE_CONFIG=/kong/config.yml
+    volumes:
+      - ./kong:/kong/config
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
+  immudb_data:
+  ipfs_data:

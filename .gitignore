@@ -1,0 +1,22 @@
+# Documentation files
+*.docx
+*.pptx
+capstone1-report.html
+capstone1-report.md
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.*
+
+# Build outputs
+/.next/
+/out/
+/build/
+
+# Environment files
+.env*
+
+# OS files
+.DS_Store
+*.log
